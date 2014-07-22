@@ -168,7 +168,7 @@ file { '/srv/www':
 }
 
 # Install a Drupal email  frontend, email.postfix.local
-drush::run { 'dl drupal':
+drush::dl { 'drupal':
   options => '--destination=/srv/www --drupal-project-rename=drupal',
   drush_user => 'www-admin',
   creates => '/srv/www/drupal',

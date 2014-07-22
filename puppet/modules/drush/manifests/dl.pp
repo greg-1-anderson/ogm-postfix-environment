@@ -4,6 +4,7 @@ define drush::dl (
   $arguments  = $drush::defaults::arguments,
   $drush_user = $drush::defaults::drush_user,
   $drush_home = $drush::defaults::drush_home,
+  $creates     = $drush::defaults::creates,
   $log        = $drush::defaults::log
   ) {
 
@@ -17,6 +18,7 @@ define drush::dl (
     arguments  => $real_args,
     drush_user => $drush_user,
     drush_home => $drush_home,
+    creates    => $creates,
     log        => $log,
   }
 
