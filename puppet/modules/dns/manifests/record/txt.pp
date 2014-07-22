@@ -1,7 +1,3 @@
-# == Define dns::record::txt
-#
-# Wrapper for dns::record for TXT records
-#
 define dns::record::txt (
   $zone,
   $data,

@@ -1,7 +1,3 @@
-# == Define: dns::record::mx
-#
-# Wrapper for dns::record to set an XM record.
-#
 define dns::record::mx (
   $zone,
   $data,

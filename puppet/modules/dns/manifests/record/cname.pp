@@ -1,7 +1,3 @@
-# == Define dns::record::dname
-#
-# Wrapper for dns::record to set a CNAME
-#
 define dns::record::cname (
   $zone,
   $data,

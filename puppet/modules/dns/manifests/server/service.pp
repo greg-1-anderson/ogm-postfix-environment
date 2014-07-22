@@ -1,6 +1,4 @@
-class dns::server::service (
-  $service = $dns::server::params::service
-) inherits dns::server::params {
+class dns::server::service inherits dns::server::params {
 
   service { $service:
     ensure     => running,

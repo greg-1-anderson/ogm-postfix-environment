@@ -1,13 +1,8 @@
-# == Define dns::record::prt
-#
-# Wrapper for dns::record to set PTRs
-#
 define dns::record::ptr (
   $zone,
   $data,
   $ttl = '',
-  $host = $name
-) {
+  $host = $name ) {
 
   $alias = "${host},PTR,${zone}"
 

@@ -1,6 +1,6 @@
 # Puppet DNS (BIND9) Module
 
-[![Build Status](https://travis-ci.org/ajjahn/puppet-dns.png?branch=master)](https://travis-ci.org/ajjahn/puppet-dns)
+[![Build Status](https://travis-ci.org/ajjahn/puppet-dns.png)](https://travis-ci.org/ajjahn/puppet-dns)
 
 Module for provisioning DNS (bind9)
 
@@ -82,24 +82,6 @@ Tweak and add the following to your site manifest:
         data => 'Hello World',
       }
     }
-
-You can also declare forwarders for a specific zone, if you don't have one in the dns::option.
-
-      dns::zone { 'example.com':
-        soa             => "ns1.example.com",
-        soa_email       => 'admin.example.com',
-        allow_forwarder => ['8.8.8.8'],
-        forward_policy  => 'first'
-        nameservers     => ["ns1"]
-      }
-
-You can change the checking of the domain name. The policy can be either warn fail or ignore.
-
-      dns::option {
-	check_name_master = 'fail'
-	check_name_slave = 'warn'
-	check_name_remote = 'ignore'
-      }
 
 ### Exported resource patterns
     node default {
