@@ -6,24 +6,15 @@
 #
 # How about /usr/local/composer/vendor/bin, then?
 define composer::require (
-  $package,
-  $version
+  $version = 'dev-master',
+  $home = $::composer::composer_home,
 ) {
   include composer
 
-  file { '/etc/profile.d/composerglobalpath.sh':
-    mode => 0755,
-    content => 'PATH=$PATH:/usr/local/composer/vendor/bin',
-  }
-
-  exec { 'create-composer-home':
-    command => 'mkdir -p /usr/local/composer',
-    require => File['/etc/profile.d/composerglobalpath.sh'],
-  }
-
   exec { $title:
-    command => "composer global require $package:$version",
-    environment => ["COMPOSER_HOME=/usr/local/composer"],
-    require => [ Exec['composer-fix-permissions'], Exec['create-composer-home'], ],
+    command      => "composer global require $title:$version",
+    path         => '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin',
+    environment  => ["COMPOSER_HOME=$home"],
+    require      => [ Exec['composer-fix-permissions'], Exec['create-composer-home'], ],
   }
 }

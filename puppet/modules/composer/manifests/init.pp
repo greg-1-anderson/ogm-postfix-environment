@@ -29,7 +29,8 @@ class composer (
   $target_dir   = 'UNDEF',
   $command_name = 'UNDEF',
   $user         = 'UNDEF',
-  $auto_update  = false
+  $auto_update  = false,
+  $composer_home = '/usr/local/composer',
 ) {
 
   include composer::params
@@ -49,10 +50,25 @@ class composer (
     default => $user
   }
 
+  # We do not need Package['git'] to install
+  # composer, but `composer require` will often need it
   if ! defined(Package['git']) {
       package { 'git':
           ensure => installed,
       }
+  }
+
+  # Insure that the vendor/bin directory in composer_home
+  # will always be on the $PATH for logged-in users.
+  file { '/etc/profile.d/composerglobalpath.sh':
+    mode => 0755,
+    content => "PATH=\$PATH:$composer_home/vendor/bin",
+  }
+
+  # Using File with recurse => true != mkdir -p.
+  exec { 'create-composer-home':
+    command => "mkdir -p $composer_home",
+    require => File['/etc/profile.d/composerglobalpath.sh'],
   }
 
   wget::fetch { 'composer-install':
