@@ -1,10 +1,9 @@
 class drush (
-  $version          = $drush::params::version,
-  $prefer_source    = false,
-  ) inherits drush::params {
+  $version          = $drush::defaults::version,
+  $prefer_source    = undef,
+  ) inherits drush::defaults {
 
-  composer::require { 'install-drush':
-    package => "drush/drush",
+  composer::require { 'drush/drush':
     version => "$version",
   }
 }

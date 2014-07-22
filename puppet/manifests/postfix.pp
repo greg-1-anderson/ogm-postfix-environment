@@ -68,6 +68,17 @@ group { 'ogm':
   gid              => 444,
 }
 
+user { 'ogm':
+  require          => Group['ogm'],
+  ensure           => 'present',
+  comment          => 'og_mailinglist proxy user',
+  gid              => 444,
+  home             => "/home/ogm",
+  password         => false,
+  shell            => '/bin/false',
+  uid              => 444,
+}
+
 file { '/home/ogm':
   require          => User['ogm'],
   ensure           => directory,
@@ -92,17 +103,6 @@ DOMAIN=`formail -cXX-Original-To: | sed -e 's/^[^@]*@//'`
   owner            => 'ogm',
   group            => 'ogm',
   mode             => 700,
-}
-
-user { 'ogm':
-  require          => Group['ogm'],
-  ensure           => 'present',
-  comment          => 'og_mailinglist proxy user',
-  gid              => 444,
-  home             => "/home/ogm",
-  password         => false,
-  shell            => '/bin/false',
-  uid              => 444,
 }
 
 $apache_php_ini = hiera("php::mod_php5::inifile", "/etc/php.ini")
@@ -138,5 +138,41 @@ exec { "php-upgrade":
     require => Package['python-software-properties'],
 }
 Exec["php-upgrade"] -> Package['php5']
+
+group { 'www-admin':
+  ensure           => 'present',
+  gid              => 888,
+}
+
+user { 'www-admin':
+  require          => Group['www-admin'],
+  ensure           => 'present',
+  comment          => 'web admin; owns files not writable by web server, etc.',
+  gid              => 888,
+  home             => "/srv/www",
+  password         => false,
+  shell            => '/bin/false',
+  uid              => 888,
+}
+
+
+file { '/srv':
+  ensure => directory,
+}
+
+file { '/srv/www':
+  ensure => directory,
+  owner => 'www-admin',
+  group => 'www-admin',
+  mode => '0750',
+}
+
+# Install a Drupal email  frontend, email.postfix.local
+drush::run { 'dl drupal':
+  options => '--destination=/srv/www --drupal-project-rename=drupal',
+  drush_user => 'www-admin',
+  creates => '/srv/www/drupal',
+  require => File['/srv/www'],
+}
 
 hiera_include('classes')
