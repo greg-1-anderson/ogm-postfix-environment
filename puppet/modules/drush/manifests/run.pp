@@ -10,10 +10,10 @@ define drush::run (
   $installed   = $drush::defaults::installed,
   $creates     = $drush::defaults::creates,
   $paths       = $drush::defaults::paths,
-  $timeout     = false,
-  $unless      = false,
-  $onlyif      = false,
-  $refreshonly = false
+  $timeout     = undef,
+  $unless      = undef,
+  $onlyif      = undef,
+  $refreshonly = undef
   ) {
 
   if $log { $log_output = " >> ${log} 2>&1" }
@@ -21,37 +21,18 @@ define drush::run (
   if $command { $real_command = $command }
   else { $real_command = $name}
 
-  exec {"drush-run:${name}":
+  exec { "drush-run:${name}":
     command     => "drush ${site_alias} --yes ${options} ${real_command} ${arguments} ${log_output}",
     user        => $drush_user,
     group       => $drush_user,
     path        => $paths,
     environment => "HOME=${drush_home}",
     require     => Composer::Require['drush/drush'],
+    cwd         => $site_path,
+    creates     => $creates,
+    timeout     => $timeout,
+    unless      => $unless,
+    onlyif      => $onlyif,
+    refreshonly => $refreshonly,
   }
-
-  if $site_path {
-    Exec["drush-run:${name}"] { cwd => $site_path }
-  }
-
-  if $creates {
-    Exec["drush-run:${name}"] { creates => $creates }
-  }
-
-  if $timeout {
-    Exec["drush-run:${name}"] { timeout => $timeout }
-  }
-
-  if $unless {
-    Exec["drush-run:${name}"] { unless => $unless }
-  }
-
-  if $onlyif {
-    Exec["drush-run:${name}"] { onlyif => $onlyif }
-  }
-
-  if $refreshonly {
-    Exec["drush-run:${name}"] { refreshonly => $refreshonly }
-  }
-
 }
