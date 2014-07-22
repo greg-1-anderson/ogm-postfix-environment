@@ -18,11 +18,22 @@ class php::mod_php5 (
     notify  => Service[$httpd_service_name],
   }
 
-  # Custom httpd conf snippet
-  file { "${httpd_conf_dir}/php.conf":
-    content => template('php/httpd/php.conf.erb'),
-    require => Package[$httpd_package_name],
-    notify  => Service[$httpd_service_name],
+  case $::osfamily {
+    'Debian': {
+      # Enable httpd php conf included with package
+      exec { '/usr/sbin/a2enmod':
+        require => Package[$httpd_package_name],
+        notify  => Service[$httpd_service_name],
+      }
+    }
+    default: {
+      # Custom httpd conf snippet
+      file { "${httpd_conf_dir}/php.conf":
+        content => template('php/httpd/php.conf.erb'),
+        require => Package[$httpd_package_name],
+        notify  => Service[$httpd_service_name],
+      }
+    }
   }
 
   # Notify the httpd service for any php.ini changes too
