@@ -1,0 +1,2 @@
+---
+#variablename: "value.%{::domain}"

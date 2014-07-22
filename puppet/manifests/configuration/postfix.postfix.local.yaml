@@ -1,0 +1,83 @@
+---
+# See vagrant_1.yaml for additional shared configuration for vagrant
+
+classes:
+  - "postfix::server"
+  - "apache"
+  - "php::cli"
+  - "php::mod_php5"
+  - "composer"
+
+local_users:
+  joe:
+    password: password
+
+email_aliases:
+  postfix.local:
+    joe.user: joe
+    admin: joe
+    list:
+      - greg.anderson@reetstreet.com
+      - greg.anderson@greenknowe.org
+  virtual.local:
+    test: joe
+    group:
+      - greg.anderson@reetstreet.com
+      - greg.anderson@greenknowe.org
+
+dns_zones:
+  postfix.local:
+    soa: ns1.postfix.local
+    soa_email: admin@postfix.local
+    nameservers:
+      - "ns1"
+  213.168.192.IN-ADDR.ARPA:
+    soa: ns1.postfix.local
+    soa_email: admin@postfix.local
+    nameservers:
+      - "ns1"
+
+domain_records:
+  postfix:
+    zone: "postfix.local"
+    data: "192.168.213.201"
+    ptr: true
+  client:
+    zone: "postfix.local"
+    data: "192.168.213.202"
+    ptr: true
+
+mx_records:
+  "postfix.local.":
+    zone: "postfix.local"
+    preference: 0
+    data: "postfix.postfix.local"
+
+postfix::server::db_files:
+  virtual:
+    content: "@postfix.local ogm"
+  aliases:
+    postfixdir: /etc
+    content: "postmaster: vagrant"
+
+postfix::server::myhostname: 'postfix.postfix.local'
+
+postfix::server::mydomain: 'postfix.local'
+
+postfix::server::mydestination: '$myhostname, localhost.$mydomain, localhost, $mydomain'
+
+postfix::server::mailbox_command: '/usr/bin/procmail -a "$EXTENSION"'
+
+postfix::server::inet_interfaces: 'all'
+
+postfix::server::message_size_limit: '15360000' # 15MB
+
+postfix::server::virtual_alias_maps:
+  - hash:/etc/postfix/virtual
+
+
+apache::mpm_module: prefork
+
+php::mod_php5::inifile: /etc/php5/apache2/php.ini
+
+php::cli::inifile: /etc/php5/cli/php.ini

@@ -1,0 +1,10 @@
+---
+:backends: yaml
+:yaml:
+  :datadir: "%{settings::manifestdir}/configuration"
+:hierarchy:
+  - "%{::clientcert}"
+  - "%{::environment}"
+  - "vagrant_%{::vagrant}"
+  - common
+:logger: console
