@@ -7,6 +7,7 @@ classes:
   - "php::cli"
   - "php::mod_php5"
   - "composer"
+  - "drush"
 
 local_users:
   joe:

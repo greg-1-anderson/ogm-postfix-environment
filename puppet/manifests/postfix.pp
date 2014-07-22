@@ -12,7 +12,7 @@
 #   $ vagrant up postfix
 #
 
-Exec { path => "/usr/sbin/:/sbin:/usr/bin:/bin" }
+Exec { path => "/usr/sbin/:/sbin:/usr/bin:/bin:/usr/local/bin" }
 File { owner => 'root', group => 'root' }
 
 #
@@ -108,9 +108,7 @@ user { 'ogm':
 $apache_php_ini = hiera("php::mod_php5::inifile", "/etc/php.ini")
 $apache_php_ini_parent = dirname($apache_php_ini)
 
-file { $apache_php_ini_parent:
-  ensure => directory,
-  recurse => true,
+exec { "mkdir -p $apache_php_ini_parent":
   before => Php::Ini[$apache_php_ini],
 }
 
@@ -121,9 +119,7 @@ php::ini { $apache_php_ini:
 $cli_php_ini = hiera("php::cli::inifile", "/etc/cli.ini")
 $cli_php_ini_parent = dirname($cli_php_ini)
 
-file { $cli_php_ini_parent:
-  ensure => directory,
-  recurse => true,
+exec { "mkdir -p $cli_php_ini_parent":
   before => Php::Ini[$cli_php_ini],
 }
 

@@ -49,10 +49,17 @@ class composer (
     default => $user
   }
 
+  if ! defined(Package['git']) {
+      package { 'git':
+          ensure => installed,
+      }
+  }
+
   wget::fetch { 'composer-install':
     source      => $::composer::params::phar_location,
     destination => "${composer_target_dir}/${composer_command_name}",
     execuser    => $composer_user,
+    require     => Package['git'],
   }
 
   exec { 'composer-fix-permissions':
