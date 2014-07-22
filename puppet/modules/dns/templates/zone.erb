@@ -1,0 +1,28 @@
+zone "<%= @zone %>" {
+  type <%= @zone_type %>;
+<% if @zone_notify -%>
+  notify <%= @zone_notify %>;
+<% end -%>
+  file "<%= @zone_file %>";
+<% if @zone_type == 'slave' -%>
+  masters { <%= @slave_masters %>;};
+<% elsif @zone_type == 'master' -%>
+<% if @allow_transfer -%>
+  allow-transfer {
+<% @allow_transfer.each do |ip| -%>
+  <%= ip %>;
+<% end -%>
+  };
+<% end -%>
+
+<% if !@allow_forwarder.empty? -%>
+  forward <%= @forward_policy %>;
+  forwarders {
+<% @allow_forwarder.each do |ip| -%>
+  <%= ip %>;
+<% end -%>
+  };
+<% end -%>
+<% end -%>
+
+};
