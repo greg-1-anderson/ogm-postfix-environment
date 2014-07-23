@@ -78,6 +78,7 @@ Vagrant.configure("2") do |config|
     node.vm.network "private_network", ip: private_address,
       virtualbox__intnet: "isolatednetwork"
     #node.vm.provision :hosts
+    node.vm.network "forwarded_port", guest: 80, host: 8484
 
     # Provision with puppet.
     node.vm.provision :puppet do |puppet|
