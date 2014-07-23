@@ -175,4 +175,36 @@ drush::dl { 'drupal':
   require => File['/srv/www'],
 }
 
+drush::dl { 'og_mailinglist og':
+  options => '--root=/srv/www/drupal',
+  drush_user => 'www-admin',
+  require => Drush::Dl['drupal'],
+}
+
+Database {
+  require => Class['mysql::server'],
+}
+
+mysql::db { 'drupaldb':
+  user     => 'wwwdata',
+  password => 'password',
+  host     => 'localhost',
+  grant    => ['all'],
+}
+
+# Drupal needs php5-gd
+package { 'php5-gd':
+}
+
+drush::run { 'site-install':
+  options => '--root=/srv/www/drupal --db-su=root --db-su-pw=password --db-url=mysql://root:password@localhost/drupaldb --site-name="Email Group Management"',
+  require => [ Package['php5-gd'], Mysql::Db['drupaldb'], Drush::Dl['drupal'] ]
+}
+
+drush::en { 'og_mailinglist og':
+  options => '--root=/srv/www/drupal',
+  drush_user => 'www-admin',
+  require => Drush::Run['site-install'],
+}
+
 hiera_include('classes')

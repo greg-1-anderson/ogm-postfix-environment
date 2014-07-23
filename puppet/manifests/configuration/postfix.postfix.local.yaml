@@ -8,6 +8,9 @@ classes:
   - "php::mod_php5"
   - "composer"
   - "drush"
+  - "mysql"
+  - "mysql::php"
+  - "mysql::server"
 
 local_users:
   joe:
@@ -82,3 +85,7 @@ apache::mpm_module: prefork
 php::mod_php5::inifile: /etc/php5/apache2/php.ini
 
 php::cli::inifile: /etc/php5/cli/php.ini
+
+mysql::server::config_hash:
+  root_password: password
+
