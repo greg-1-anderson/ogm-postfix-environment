@@ -158,69 +158,15 @@ user { 'www-admin':
 
 file { '/srv':
   ensure => directory,
+  mode => '0755',
 }
 
 file { '/srv/www':
   ensure => directory,
   owner => 'www-admin',
   group => 'www-admin',
-  mode => '0750',
+  mode => '0755',
 }
 
-# Install a Drupal email  frontend, ogm.postfix.local
-drush::dl { 'drupal':
-  options => '--destination=/srv/www --drupal-project-rename=drupal',
-  drush_user => 'www-admin',
-  creates => '/srv/www/drupal',
-  require => File['/srv/www'],
-}
-
-drush::dl { 'modules':
-  arguments => 'og_mailinglist og',
-  options => '--root=/srv/www/drupal',
-  drush_user => 'www-admin',
-  require => Drush::Dl['drupal'],
-}
-
-Database {
-  require => Class['mysql::server'],
-}
-
-mysql::db { 'drupaldb':
-  user     => 'www-data',
-  password => 'password',
-  host     => 'localhost',
-  grant    => ['all'],
-}
-
-# Drupal needs php5-gd
-package { 'php5-gd':
-}
-
-exec { 'drupal-permissions':
-  command => 'mkdir -p /srv/www/drupal/sites/default/files && chgrp -R www-data /srv/www && chmod -R g+w /srv/www/drupal/sites/default/files',
-  require => [ Drush::Dl['drupal'], Drush::Dl['modules'], ],
-}
-
-drush::run { 'site-install':
-  options => '--root=/srv/www/drupal --db-su=root --db-su-pw=password --db-url=mysql://www-data:password@localhost/drupaldb --site-name="OG Mailinglist Server"',
-  require => [ Package['php5-gd'], Mysql::Db['drupaldb'], Exec['drupal-permissions'], ],
-}
-
-drush::en { 'og_mailinglist og':
-  options => '--root=/srv/www/drupal',
-  drush_user => 'www-admin',
-  require => Drush::Run['site-install'],
-}
-
-apache::vhost { 'ogm.postfix.local':
-  port    => '80',
-  priority => 5,
-  docroot => '/srv/www/drupal',
-  notify => Service['apache2'],
-  require => Drush::Run['site-install'],
-}
-
-apache::mod { 'php5': }
 
 hiera_include('classes')

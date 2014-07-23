@@ -8,9 +8,17 @@ classes:
   - "php::mod_php5"
   - "composer"
   - "drush"
+  - "drupal"
   - "mysql"
   - "mysql::php"
   - "mysql::server"
+
+# Install a Drupal email  frontend, ogm.postfix.local
+drupal::site_url: 'ogm.postfix.local'
+
+drupal::projects: "og_mailinglist og"
+
+drupal::modules: "og_maillinglist og"
 
 local_users:
   joe:
