@@ -8,8 +8,17 @@ define drush::en (
   $refreshonly = false
   ) {
 
-  if $arguments { $real_args = $arguments }
-  else { $real_args = $name }
+  if $arguments {
+    if is_array($arguments) {
+      $real_args = join($arguments, ' ')
+    }
+    else {
+      $real_args = $arguments
+    }
+  }
+  else {
+    $real_args = "${name}"
+  }
 
   drush::run {"drush-en:${name}":
     command     => 'pm-enable',
