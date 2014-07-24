@@ -14,7 +14,14 @@ classes:
   - "mysql::server"
 
 # Install a Drupal email  frontend, ogm.postfix.local
-drupal::site_url: 'ogm.postfix.local'
+drupal::sites:
+  'ogm.postfix.local':
+    projects:
+      - og_mailinglist
+      - og
+    modules:
+      - og_mailinglist
+      - og
 
 drupal::projects: "og_mailinglist og"
 
