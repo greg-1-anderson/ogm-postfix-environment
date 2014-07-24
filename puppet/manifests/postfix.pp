@@ -43,26 +43,6 @@ Exec["apt-update"] -> Package <| |>
 
 package { 'procmail': ensure => installed }
 
-# Look up the domain records defined for
-# this host.  If not empty, then configure
-# a DNS server.
-$domain_records = hiera("domain_records", [])
-if !empty($domain_records) {
-  include dns::server
-
-  $dns_zones = hiera("dns_zones", [])
-  create_resources('dns::zone',$dns_zones)
-  create_resources('dns::record::a',$domain_records)
-  $mx_records = hiera("mx_records", [])
-  if !empty($mx_records) {
-    create_resources('dns::record::mx',$mx_records)
-  }
-  $txt_records = hiera("txt_records", [])
-  if !empty($txt_records) {
-    create_resources('dns::record::txt',$txt_records)
-  }
-}
-
 group { 'ogm':
   ensure           => 'present',
   gid              => 444,

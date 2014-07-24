@@ -3,6 +3,7 @@
 
 classes:
   - "postfix::server"
+  - "dns"
   - "apache"
   - "php::cli"
   - "php::mod_php5"
@@ -44,10 +45,15 @@ email_aliases:
       - greg.anderson@reetstreet.com
       - greg.anderson@greenknowe.org
 
-dns_zones:
+dns::zones:
   postfix.local:
     soa: ns1.postfix.local
     soa_email: admin@postfix.local
+    nameservers:
+      - "ns1"
+  westkingdom.local:
+    soa: ns1.westkingdom.local
+    soa_email: admin@westkingdom.local
     nameservers:
       - "ns1"
   213.168.192.IN-ADDR.ARPA:
@@ -56,7 +62,7 @@ dns_zones:
     nameservers:
       - "ns1"
 
-domain_records:
+dns::a:
   postfix:
     zone: "postfix.local"
     data: "192.168.213.201"
@@ -65,10 +71,18 @@ domain_records:
     zone: "postfix.local"
     data: "192.168.213.202"
     ptr: true
+  mists:
+    zone: "westkingdom.local"
+    data: "192.168.213.201"
+    ptr: false
 
-mx_records:
+dns::mx:
   "postfix.local.":
     zone: "postfix.local"
+    preference: 0
+    data: "postfix.postfix.local"
+  "westkingdom.local.":
+    zone: "westkingdom.local"
     preference: 0
     data: "postfix.postfix.local"
 
