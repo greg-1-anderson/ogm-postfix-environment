@@ -8,6 +8,10 @@ define dns::zone (
   $zone_expire = '2419200',
   $zone_minimum = '604800',
   $nameservers = [ $::fqdn ],
+  $a = [],
+  $cname = [],
+  $mx = [],
+  $txt = [],
   $reverse = false,
   $zone_type = 'master',
   $allow_transfer = [],
@@ -58,4 +62,17 @@ define dns::zone (
     content => template("${module_name}/zone.erb")
   }
 
+  $defaults = { 'zone' => $name }
+  if !empty($a) {
+    create_resources('dns::record::a', $a, $defaults)
+  }
+  if !empty($cname) {
+    create_resources('dns::record::cname', $cname, $defaults)
+  }
+  if !empty($mx) {
+    create_resources('dns::record::mx',$mx, $defaults)
+  }
+  if !empty($txt) {
+    create_resources('dns::record::txt',$txt, $defaults)
+  }
 }
