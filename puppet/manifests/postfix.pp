@@ -41,50 +41,6 @@ exec { "apt-update":
 }
 Exec["apt-update"] -> Package <| |>
 
-package { 'procmail': ensure => installed }
-
-group { 'ogm':
-  ensure           => 'present',
-  gid              => 444,
-}
-
-user { 'ogm':
-  require          => Group['ogm'],
-  ensure           => 'present',
-  comment          => 'og_mailinglist proxy user',
-  gid              => 444,
-  home             => "/home/ogm",
-  password         => false,
-  shell            => '/bin/false',
-  uid              => 444,
-}
-
-file { '/home/ogm':
-  require          => User['ogm'],
-  ensure           => directory,
-  owner            => 'ogm',
-  group            => 'ogm',
-  mode             => 750,
-}
-
-file { '/home/ogm/.procmailrc':
-  require          => User['ogm'],
-  ensure           => file,
-  content          => "MAILDIR = mail
-LOGFILE = proc-log
-SHELL=/bin/sh
-
-# Pull out the domain from the X-Original-To header
-DOMAIN=`formail -cXX-Original-To: | sed -e 's/^[^@]*@//'`
-
-:0
-|/home/ogm/bin/deliver $DOMAIN
-",
-  owner            => 'ogm',
-  group            => 'ogm',
-  mode             => 700,
-}
-
 $apache_php_ini = hiera("php::mod_php5::inifile", "/etc/php.ini")
 $apache_php_ini_parent = dirname($apache_php_ini)
 
