@@ -8,6 +8,8 @@ define dns::zone (
   $zone_expire = '2419200',
   $zone_minimum = '604800',
   $nameservers = [ $::fqdn ],
+  $ip = undef,
+  $rdns = true,
   $a = [],
   $cname = [],
   $mx = [],
@@ -62,6 +64,24 @@ define dns::zone (
     content => template("${module_name}/zone.erb")
   }
 
+  # Shortcut: specify ip => '1.2.3.4' as a shortcut
+  # method of creating an a record for the domain,
+  # and a cname for www.domain pointing at the same
+  # ip address.
+  if $ip {
+    dns::record::a { "$name:default_a_record":
+      host => "${name}.",
+      data => $ip,
+      ptr => $rdns,
+      zone => $name,
+    }
+    dns::record::cname { "$name:default_www_record":
+      host => "www",
+      data => "${name}.",
+      zone => $name,
+    }
+  }
+
   $defaults = { 'zone' => $name }
   if !empty($a) {
     create_resources('dns::record::a', $a, $defaults)
@@ -70,7 +90,17 @@ define dns::zone (
     create_resources('dns::record::cname', $cname, $defaults)
   }
   if !empty($mx) {
-    create_resources('dns::record::mx',$mx, $defaults)
+    if is_hash($mx) {
+      create_resources('dns::record::mx',$mx, $defaults)
+    }
+    else {
+      dns::record::mx { "$name:default_mx_record":
+        host => "${name}.",
+        preference => 10,
+        data => $mx,
+        zone => $name,
+      }
+    }
   }
   if !empty($txt) {
     create_resources('dns::record::txt',$txt, $defaults)

@@ -51,10 +51,9 @@ dns::zones:
     soa_email: admin@postfix.local
     nameservers:
       - "ns1"
+    ip: "192.168.213.201"
+    rdns: true
     a:
-      postfix:
-        data: "192.168.213.201"
-        ptr: true
       client:
         data: "192.168.213.202"
         ptr: true
@@ -67,14 +66,25 @@ dns::zones:
     soa_email: admin@westkingdom.local
     nameservers:
       - "ns1"
-    a:
-      mists:
-        data: "192.168.213.201"
-        ptr: false
-    mx:
-      "westkingdom.local.":
-        preference: 10
-        data: "postfix.postfix.local"
+    ip: "192.168.213.201"
+    rdns: false
+    mx: "postfix.postfix.local"
+  mists.westkingdom.local:
+    soa: ns1.mists.westkingdom.local
+    soa_email: admin@westkingdom.local
+    nameservers:
+      - "ns1"
+    ip: "192.168.213.201"
+    rdns: false
+    mx: "postfix.postfix.local"
+  cynagua.westkingdom.local:
+    soa: ns1.cynagua.westkingdom.local
+    soa_email: admin@westkingdom.local
+    nameservers:
+      - "ns1"
+    ip: "192.168.213.201"
+    rdns: false
+    mx: "postfix.postfix.local"
   213.168.192.IN-ADDR.ARPA:
     soa: ns1.postfix.local
     soa_email: admin@postfix.local
