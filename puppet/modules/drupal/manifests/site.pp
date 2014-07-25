@@ -4,6 +4,7 @@ define drupal::site (
   $site_parent       = $::drupal::site_parent,
   $root_user         = $::drupal::root_user,
   $webserver_user    = $::drupal::webserver_user,
+  $priority          = 20,
   $password          = $::drupal::password,
 ) {
   $site_url = $name
@@ -69,7 +70,7 @@ define drupal::site (
 
   apache::vhost { $site_url:
     port    => '80',
-    priority => 5,
+    priority => $priority,
     override => ['All'],
     docroot => $drupal_root,
     notify => Service['apache2'],

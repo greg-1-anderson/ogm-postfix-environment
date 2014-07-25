@@ -21,6 +21,7 @@ classes:
 # Install a Drupal email frontend, ogm.postfix.local
 drupal::sites:
   'ogm.postfix.local':
+    priority: 10
     projects:
       - og_mailinglist
       - og
