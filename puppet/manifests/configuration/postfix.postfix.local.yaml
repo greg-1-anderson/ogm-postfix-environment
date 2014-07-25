@@ -24,10 +24,12 @@ drupal::sites:
     projects:
       - og_mailinglist
       - og
+      - devel
     modules:
       - og_mailinglist
       - og
       - og_ui
+      - devel
 
 local_users:
   joe:
