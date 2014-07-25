@@ -26,12 +26,21 @@ drupal::sites:
     projects:
       - og_mailinglist
       - og
+      - admin_menu
+      - environment_indicator
       - devel
-    modules:
+    enable:
       - og_mailinglist
       - og
       - og_ui
+      - admin_menu
+      - environment_indicator
       - devel
+    disable:
+      - overlay
+      - dashboard
+      - toolbar
+      - shortcut
 
 local_users:
   joe:

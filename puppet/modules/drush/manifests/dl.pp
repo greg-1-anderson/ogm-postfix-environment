@@ -8,17 +8,9 @@ define drush::dl (
   $log        = $drush::defaults::log
   ) {
 
-  if $arguments {
-    if is_array($arguments) {
-      $real_args = join($arguments, ' ')
-    }
-    else {
-      $real_args = $arguments
-    }
-  }
-  else {
-    $real_args = "${name}"
-  }
+  # Convert from array to space-separated string.
+  if $arguments { $real_args = join(any2array($arguments), ' ') }
+  else { $real_args = $name }
 
   drush::run {"drush-dl:${name}":
     command    => 'pm-download',

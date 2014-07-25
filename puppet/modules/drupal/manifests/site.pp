@@ -1,6 +1,7 @@
 define drupal::site (
-  $projects          = '',
-  $modules           = '',
+  $projects          = [],
+  $enable            = [],
+  $disable           = [],
   $site_parent       = $::drupal::site_parent,
   $root_user         = $::drupal::root_user,
   $webserver_user    = $::drupal::webserver_user,
@@ -61,11 +62,18 @@ define drupal::site (
     require => [ Package['php5-gd'], Mysql::Db["$db_name"], Exec["${site_url}:permissions"], ],
   }
 
-  drush::en { '$site_url:modules':
-    arguments => $modules,
+  drush::dis { "$site_url:disable":
+    arguments => $disable,
     options => "--root=/srv/www/$site_url/drupal",
     drush_user => $root_user,
     require => Drush::Run["${site_url}:site-install"],
+  }
+
+  drush::en { "$site_url:enable":
+    arguments => $enable,
+    options => "--root=/srv/www/$site_url/drupal",
+    drush_user => $root_user,
+    require => Drush::Dis["${site_url}:disable"],
   }
 
   apache::vhost { $site_url:

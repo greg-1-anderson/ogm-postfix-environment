@@ -8,7 +8,8 @@ define drush::dis (
   $log        = $drush::defaults::log
   ) {
 
-  if $arguments { $real_args = $arguments }
+  # Convert from array to space-separated string.
+  if $arguments { $real_args = join(any2array($arguments), ' ') }
   else { $real_args = $name }
 
   drush::run {"drush-dis:${name}":
