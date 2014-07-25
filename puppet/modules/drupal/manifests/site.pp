@@ -7,11 +7,20 @@ define drupal::site (
   $password          = $::drupal::password,
 ) {
   $site_url = $name
-  $joined_site_url = join(split($site_url, '.'))
+  $site_root = "/srv/www/$site_url"
+  $drupal_root = "$site_root/drupal"
+  $url_parts = split($site_url, '[.]')
+  $short_name = $url_parts[0]
+  $joined_site_url = join($url_parts)
   $db_name = "${joined_site_url}db"
   $db_url = "mysql://www-data:password@localhost/${$db_name}"
 
-  file { "/srv/www/$site_url":
+  drush::alias { $short_name:
+    root => $drupal_root,
+    uri => $site_url,
+  }
+
+  file { $site_root:
     ensure => directory,
     owner => $root_user,
     group => $root_user,
@@ -22,8 +31,8 @@ define drupal::site (
     arguments => 'drupal',
     options => "--destination=/srv/www/$site_url --drupal-project-rename=drupal",
     drush_user => $root_user,
-    creates => "/srv/www/$site_url/drupal",
-    require => File["/srv/www/$site_url"],
+    creates => $drupal_root,
+    require => File[$site_root],
   }
 
   drush::dl { "$site_url:projects":
@@ -62,7 +71,7 @@ define drupal::site (
     port    => '80',
     priority => 5,
     override => ['All'],
-    docroot => "/srv/www/$site_url/drupal",
+    docroot => $drupal_root,
     notify => Service['apache2'],
     require => Drush::Run["${site_url}:site-install"],
   }

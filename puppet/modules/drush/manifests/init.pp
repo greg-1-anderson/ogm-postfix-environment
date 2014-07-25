@@ -6,4 +6,8 @@ class drush (
   composer::require { 'drush/drush':
     version => "$version",
   }
+
+  file { '/etc/drush':
+    ensure => directory,
+  }
 }
