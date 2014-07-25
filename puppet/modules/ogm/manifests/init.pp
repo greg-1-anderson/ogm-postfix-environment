@@ -3,9 +3,8 @@ class ogm (
   $mail_users_group = 'ogm',
   $mail_user_id = 444,
   $mail_user_gid = 444,
+  $procmail_rules = undef,
 ) {
-
-  package { 'procmail': ensure => installed }
 
   group { $mail_users_group:
     ensure           => 'present',
@@ -31,23 +30,16 @@ class ogm (
     mode             => 750,
   }
 
-  file { "/home/$mail_user/.procmailrc":
-    require          => User[$mail_user],
-    ensure           => file,
-    content          => "MAILDIR = mail
-LOGFILE = proc-log
-SHELL=/bin/sh
-
-# Pull out the domain from the X-Original-To header
-DOMAIN=`formail -cXX-Original-To: | sed -e 's/^[^@]*@//'`
-
-# Send every message to the ogm deliver script
-:0
-|/home/$mail_user/bin/deliver $DOMAIN
-",
-    owner            => $mail_user,
-    group            => $mail_users_group,
-    mode             => 700,
+  procmail::conf { $mail_user:
+    maildir          => "/home/$mail_user/mail",
+    extra_vars       => {
+      "DOMAIN" => "`formail -cXX-Original-To: | sed -e 's/^[^@]*@//'`",
+    },
+    rules            => $procmail_rules,
+    fallthrough      => {
+      comment => "Everything else goes to the ogm delivery script",
+      action => "|/home/$mail_user/bin/deliver \$DOMAIN",
+    },
+    require          => File["/home/$mail_user"],
   }
-
 }

@@ -3,6 +3,7 @@
 
 classes:
   - "postfix::server"
+  - "procmail"
   - "ogm"
   - "dns"
   - "apache"
@@ -119,4 +120,3 @@ php::cli::inifile: /etc/php5/cli/php.ini
 
 mysql::server::config_hash:
   root_password: password
-
