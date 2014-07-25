@@ -1,0 +1,26 @@
+PATH=<%= @path %>
+MAILDIR=<%= @maildir %>
+DEFAULT=<%= @default %>
+<% if @extra_vars -%><% @extra_vars.each do |var,value| -%>
+<%= var.upcase -%>=<%= value %>
+<% end -%><% end -%>
+
+<% if @rules %><% @rules.each do |rule| %>
+#
+# <%= rule['comment'] %>
+#
+:0 <% if rule['flags'] -%><%= rule['flags'] %><% end %>
+* <%= rule['condition'] %>
+<% if rule['action'] -%><%= rule['action'] %><% else -%>$MAILDIR/<%= rule['comment'] %>/<% end %>
+<% if rule['multi_action'] -%><% rule['multi_action'].each do |action| -%>
+<%= action %>
+<% end -%><% end -%><% end -%><% end -%>
+
+<% if @fallthrough -%>
+#
+# <%= @fallthrough['comment'] %>
+#
+:0 <% if @fallthrough['flags']-%><%= @fallthrough['flags'] %><% end %>
+* <%= @fallthrough['condition'] %>
+<%= @fallthrough['action'] %>
+<% end -%>
