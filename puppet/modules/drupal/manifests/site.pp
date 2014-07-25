@@ -61,6 +61,7 @@ define drupal::site (
   apache::vhost { $site_url:
     port    => '80',
     priority => 5,
+    override => ['All'],
     docroot => "/srv/www/$site_url/drupal",
     notify => Service['apache2'],
     require => Drush::Run["${site_url}:site-install"],

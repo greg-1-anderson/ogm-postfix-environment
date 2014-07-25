@@ -7,6 +7,8 @@ classes:
   - "ogm"
   - "dns"
   - "apache"
+  - "apache::mod::rewrite"
+  - "apache::mod::alias"
   - "php::cli"
   - "php::mod_php5"
   - "composer"
@@ -25,6 +27,7 @@ drupal::sites:
     modules:
       - og_mailinglist
       - og
+      - og_ui
 
 local_users:
   joe:
