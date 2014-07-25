@@ -10,7 +10,7 @@ DEFAULT=<%= @default %>
 # <%= rule['comment'] %>
 #
 :0 <% if rule['flags'] -%><%= rule['flags'] %><% end %>
-* <%= rule['condition'] %>
+<% if @rule['condition'] && @rule['condition'] != '.*' -%>* <%= rule['condition'] %><% end -%>
 <% if rule['action'] -%><%= rule['action'] %><% else -%>$MAILDIR/<%= rule['comment'] %>/<% end %>
 <% if rule['multi_action'] -%><% rule['multi_action'].each do |action| -%>
 <%= action %>
@@ -21,6 +21,6 @@ DEFAULT=<%= @default %>
 # <%= @fallthrough['comment'] %>
 #
 :0 <% if @fallthrough['flags']-%><%= @fallthrough['flags'] %><% end %>
-* <%= @fallthrough['condition'] %>
+<% if @fallthrough['condition'] && @fallthrough['condition'] != '.*' -%>* <%= @fallthrough['condition'] %><% end -%>
 <%= @fallthrough['action'] %>
 <% end -%>
