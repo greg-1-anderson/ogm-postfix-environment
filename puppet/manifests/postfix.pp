@@ -75,22 +75,29 @@ exec { "php-upgrade":
 }
 Exec["php-upgrade"] -> Package['php5']
 
-group { 'www-admin':
-  ensure           => 'present',
-  gid              => 888,
-}
+hiera_include('classes')
 
-user { 'www-admin':
-  require          => Group['www-admin'],
-  ensure           => 'present',
-  comment          => 'web admin; owns files not writable by web server, etc.',
-  gid              => 888,
-  home             => "/srv/www",
-  password         => false,
-  shell            => '/bin/false',
-  uid              => 888,
-}
+$root_user = $::drupal::root_user
 
+if ! defined(User["$root_user"]) {
+
+  group { "$root_user":
+    ensure           => 'present',
+    gid              => 888,
+  }
+
+  user { "$root_user":
+    require          => Group["$root_user"],
+    ensure           => 'present',
+    comment          => 'web admin; owns files not writable by web server, etc.',
+    gid              => 888,
+    home             => "/srv/www",
+    password         => false,
+    shell            => '/bin/false',
+    uid              => 888,
+  }
+
+}
 
 file { '/srv':
   ensure => directory,
@@ -99,10 +106,9 @@ file { '/srv':
 
 file { '/srv/www':
   ensure => directory,
-  owner => 'www-admin',
-  group => 'www-admin',
+  owner => "$root_user",
+  group => "$root_user",
   mode => '0755',
 }
 
 
-hiera_include('classes')
