@@ -77,38 +77,3 @@ Exec["php-upgrade"] -> Package['php5']
 
 hiera_include('classes')
 
-$root_user = $::drupal::root_user
-
-if ! defined(User["$root_user"]) {
-
-  group { "$root_user":
-    ensure           => 'present',
-    gid              => 888,
-  }
-
-  user { "$root_user":
-    require          => Group["$root_user"],
-    ensure           => 'present',
-    comment          => 'web admin; owns files not writable by web server, etc.',
-    gid              => 888,
-    home             => "/srv/www",
-    password         => false,
-    shell            => '/bin/false',
-    uid              => 888,
-  }
-
-}
-
-file { '/srv':
-  ensure => directory,
-  mode => '0755',
-}
-
-file { '/srv/www':
-  ensure => directory,
-  owner => "$root_user",
-  group => "$root_user",
-  mode => '0755',
-}
-
-

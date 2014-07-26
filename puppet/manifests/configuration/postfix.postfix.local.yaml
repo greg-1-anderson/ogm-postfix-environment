@@ -18,11 +18,12 @@ classes:
   - "mysql::php"
   - "mysql::server"
 
+drupal::root_user: 'vagrant'
+
 # Install a Drupal email frontend, ogm.postfix.local
 drupal::sites:
   'ogm.postfix.local':
     priority: 10
-    root_user: 'vagrant'
     projects:
       - og_mailinglist
       - og
