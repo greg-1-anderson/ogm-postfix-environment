@@ -11,6 +11,10 @@ class ogm (
     gid              => $mail_user_id,
   }
 
+  package { [ "php-mail-mimedecode", "php5-imap" ]:
+    ensure => latest,
+  }
+
   user { $mail_user:
     require          => Group[$mail_users_group],
     ensure           => 'present',
