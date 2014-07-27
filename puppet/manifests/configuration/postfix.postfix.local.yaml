@@ -28,6 +28,7 @@ drupal::sites:
       - og_mailinglist
       - og
       - features
+      - strongarm
       - admin_menu
       - environment_indicator
       - devel
@@ -35,7 +36,9 @@ drupal::sites:
       - og_mailinglist
       - og
       - og_ui
+      - og_example
       - features
+      - strongarm
       - admin_menu
       - environment_indicator
       - devel
@@ -44,6 +47,9 @@ drupal::sites:
       - dashboard
       - toolbar
       - shortcut
+    variables:
+      og_mailinglist_default_content_type:
+        value: post
 
 ogm::sites:
     - domain: ogm.postfix.local

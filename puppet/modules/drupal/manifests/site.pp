@@ -2,6 +2,7 @@ define drupal::site (
   $projects          = [],
   $enable            = [],
   $disable           = [],
+  $variables         = [],
   $site_parent       = $::drupal::site_parent,
   $root_user         = $::drupal::root_user,
   $webserver_user    = $::drupal::webserver_user,
@@ -74,6 +75,15 @@ define drupal::site (
     options => "--root=/srv/www/$site_url/drupal",
     drush_user => $root_user,
     require => Drush::Dis["${site_url}:disable"],
+  }
+
+  if !empty($variables) {
+    $defaults = {
+      options => "--root=/srv/www/$site_url/drupal",
+      drush_user => $root_user,
+      require => Drush::En["${site_url}:enable"],
+    }
+    create_resources('drush::vset',$variables, $defaults)
   }
 
   apache::vhost { $site_url:
