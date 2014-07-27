@@ -27,6 +27,7 @@ drupal::sites:
     projects:
       - og_mailinglist
       - og
+      - features
       - admin_menu
       - environment_indicator
       - devel
@@ -34,6 +35,7 @@ drupal::sites:
       - og_mailinglist
       - og
       - og_ui
+      - features
       - admin_menu
       - environment_indicator
       - devel
@@ -42,6 +44,11 @@ drupal::sites:
       - dashboard
       - toolbar
       - shortcut
+
+ogm::sites:
+    - domain: ogm.postfix.local
+      drupal_path: "/srv/www/ogm.postfix.local/drupal"
+      host: "http://ogm.postfix.local"
 
 local_users:
   joe:
@@ -137,9 +144,4 @@ php::cli::inifile: /etc/php5/cli/php.ini
 
 mysql::server::config_hash:
   root_password: password
-
-ogm::sites:
-    - domain: ogm.postfix.local
-      drupal_path: "/srv/www/ogm.postfix.local/drupal"
-      host: "http://ogm.postfix.local"
 
