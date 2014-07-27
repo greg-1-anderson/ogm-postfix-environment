@@ -4,8 +4,8 @@ class ogm (
   $mail_user_id = 444,
   $mail_user_gid = 444,
   $procmail_rules = undef,
+  $sites = undef,
 ) {
-
   group { $mail_users_group:
     ensure           => 'present',
     gid              => $mail_user_id,
@@ -27,7 +27,15 @@ class ogm (
     ensure           => directory,
     owner            => $mail_user,
     group            => $mail_users_group,
-    mode             => 750,
+    mode             => '0750',
+  }
+
+  file { "/home/$mail_user/bin":
+    require          => User[$mail_user],
+    ensure           => directory,
+    owner            => $mail_user,
+    group            => $mail_users_group,
+    mode             => '0750',
   }
 
   procmail::conf { $mail_user:
@@ -38,8 +46,29 @@ class ogm (
     rules            => $procmail_rules,
     fallthrough      => {
       comment => "Everything else goes to the ogm delivery script",
-      action => "|/home/$mail_user/bin/deliver \$DOMAIN",
+      action => "|$delivery_binary \$DOMAIN",
     },
     require          => File["/home/$mail_user"],
+  }
+
+  if $sites {
+
+    $drupal_root = $sites[0]['drupal_path']
+    $ogm_delivery_source = "$drupal_root/sites/all/modules/og_mailinglist/backends/postfix_og_mailinglist/og_mailinglist_postfix_transport.php"
+    $delivery_binary = "/home/$mail_user/bin/deliver"
+    $site_info = "/home/$mail_user/bin/site_info.php"
+
+    file { $delivery_binary:
+      ensure => present,
+      source => $ogm_delivery_source,
+    }
+
+    file { $site_info:
+      ensure => file,
+      owner => $mail_user,
+      group => $mail_users_group,
+      mode => '0644',
+      content => template("ogm/site_info.php.erb"),
+    }
   }
 }

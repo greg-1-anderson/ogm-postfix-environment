@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * Information on how to pass emails to og_mailinglist.
+ *
+ * @return array of sites with associated POST urls and other data.
+ */
+function og_mailinglist_site_info($mail_domain) {
+  return array (
+<% if @sites %><% @sites.each do |site| %>
+    '<%= site['domain'] %>' => array(
+        'direct_posting' => <% if !site['post_url'] %>true<% else %>false<% end %>,
+        'drupal_path' => '<%= site['drupal_path'] %>',
+        'host' => '<%= site['host'] %>',
+<%- if site['post_url'] -%>
+        'post_url' => '<%= site['post_url'] %>',
+        'validation_string' => '<%= site['validation_string'] %>',
+<%- end -%>
+    ),
+<%- end -%><%- end -%>
+  );
+}

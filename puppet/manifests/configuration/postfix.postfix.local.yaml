@@ -137,3 +137,9 @@ php::cli::inifile: /etc/php5/cli/php.ini
 
 mysql::server::config_hash:
   root_password: password
+
+ogm::sites:
+    - domain: ogm.postfix.local
+      drupal_path: "/srv/www/ogm.postfix.local/drupal"
+      host: "http://ogm.postfix.local"
+
