@@ -35,14 +35,13 @@ drupal::sites:
       - devel
     enable:
       - libraries
-      - og_mailinglist
       - og
       - og_ui
-      - og_example
-      - features
-      - strongarm
+      - og_mailinglist
       - admin_menu
       - environment_indicator
+      - features
+      - strongarm
       - devel
     disable:
       - overlay
@@ -57,7 +56,7 @@ ogm::root_user: 'vagrant'
 ogm::sites:
     ogm.postfix.local:
       drupal_path: "/srv/www/ogm.postfix.local/drupal"
-      host: "http://ogm.postfix.local"
+      add_test_content: true
 
 local_users:
   joe:

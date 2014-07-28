@@ -11,7 +11,7 @@ function og_mailinglist_site_info($mail_domain) {
     '<%= domain %>' => array(
         'direct_posting' => <% if !site['post_url'] %>true<% else %>false<% end %>,
         'drupal_path' => '<%= site['drupal_path'] %>',
-        'host' => '<%= site['host'] %>',
+        'host' => '<% if site['host'] %><%= site['host'] %><% else %><%= domain %><% end %>',
 <%- if site['post_url'] -%>
         'post_url' => '<%= site['post_url'] %>',
         'validation_string' => '<%= site['validation_string'] %>',

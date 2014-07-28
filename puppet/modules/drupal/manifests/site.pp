@@ -88,7 +88,7 @@ define drupal::site (
 
   file { "/srv/www/$site_url/drupal/sites/all/libraries":
     ensure => directory,
-    require => Drush::Dl["${site_url}"],
+    require => Drush::En["${site_url}:enable"],
   }
 
   apache::vhost { $site_url:

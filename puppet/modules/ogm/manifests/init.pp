@@ -80,6 +80,7 @@ class ogm (
       content => template("ogm/site_info.php.erb"),
     }
     $defaults = {
+      root_user => $root_user,
     }
     create_resources('ogm::configure_site', $sites, $defaults)
   }
