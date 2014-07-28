@@ -86,6 +86,11 @@ define drupal::site (
     create_resources('drush::vset',$variables, $defaults)
   }
 
+  file { "/srv/www/$site_url/drupal/sites/all/libraries":
+    ensure => directory,
+    require => Drush::Dl["${site_url}"],
+  }
+
   apache::vhost { $site_url:
     port    => '80',
     priority => $priority,

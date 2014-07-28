@@ -29,10 +29,12 @@ drupal::sites:
       - og
       - features
       - strongarm
+      - libraries
       - admin_menu
       - environment_indicator
       - devel
     enable:
+      - libraries
       - og_mailinglist
       - og
       - og_ui
@@ -51,8 +53,9 @@ drupal::sites:
       og_mailinglist_default_content_type:
         value: post
 
+ogm::root_user: 'vagrant'
 ogm::sites:
-    - domain: ogm.postfix.local
+    ogm.postfix.local:
       drupal_path: "/srv/www/ogm.postfix.local/drupal"
       host: "http://ogm.postfix.local"
 

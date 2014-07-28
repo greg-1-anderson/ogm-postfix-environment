@@ -7,8 +7,8 @@
  */
 function og_mailinglist_site_info($mail_domain) {
   return array (
-<% if @sites %><% @sites.each do |site| %>
-    '<%= site['domain'] %>' => array(
+<% if @sites %><% @sites.each_pair do |domain, site| %>
+    '<%= domain %>' => array(
         'direct_posting' => <% if !site['post_url'] %>true<% else %>false<% end %>,
         'drupal_path' => '<%= site['drupal_path'] %>',
         'host' => '<%= site['host'] %>',

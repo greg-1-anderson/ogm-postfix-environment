@@ -3,7 +3,9 @@ class ogm (
   $mail_users_group = 'ogm',
   $mail_user_id = 444,
   $mail_user_gid = 444,
+  $root_user = 'root',
   $procmail_rules = undef,
+  $download_cache_dir = '/tmp',
   $sites = undef,
 ) {
   group { $mail_users_group:
@@ -11,7 +13,7 @@ class ogm (
     gid              => $mail_user_id,
   }
 
-  package { [ "php-mail-mimedecode", "php5-imap" ]:
+  package { [ "php-mail-mimedecode", "php5-imap", "libphp-phpmailer", ]:
     ensure => latest,
   }
 
@@ -56,8 +58,10 @@ class ogm (
   }
 
   if $sites {
+    $site_keys = keys($sites)
+    $first_site_key = $site_keys[0]
 
-    $drupal_root = $sites[0]['drupal_path']
+    $drupal_root = $sites[$first_site_key]['drupal_path']
     $ogm_delivery_source = "$drupal_root/sites/all/modules/og_mailinglist/backends/postfix_og_mailinglist/og_mailinglist_postfix_transport.php"
     $delivery_binary = "/home/$mail_user/bin/deliver"
     $site_info = "/home/$mail_user/bin/site_info.php"
@@ -65,6 +69,7 @@ class ogm (
     file { $delivery_binary:
       ensure => present,
       source => $ogm_delivery_source,
+      require => File["$drupal_root/sites/all/libraries"],
     }
 
     file { $site_info:
@@ -74,5 +79,8 @@ class ogm (
       mode => '0644',
       content => template("ogm/site_info.php.erb"),
     }
+    $defaults = {
+    }
+    create_resources('ogm::configure_site', $sites, $defaults)
   }
 }
