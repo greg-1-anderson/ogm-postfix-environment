@@ -5,7 +5,7 @@
  *
  * @return array of sites with associated POST urls and other data.
  */
-function og_mailinglist_site_info($mail_domain) {
+function og_mailinglist_site_info() {
   return array (
 <% if @sites %><% @sites.each_pair do |domain, site| %>
     '<%= domain %>' => array(
