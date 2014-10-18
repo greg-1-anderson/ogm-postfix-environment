@@ -50,3 +50,6 @@ Apache_httpd {
   # serveradmin    => 'greg.anderson@ricohsv.com',
 }
 
+package { "mailutils":
+  ensure => latest
+}

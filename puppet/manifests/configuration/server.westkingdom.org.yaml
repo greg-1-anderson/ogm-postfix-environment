@@ -1,0 +1,46 @@
+---
+# Puppet configuration for postfix email server on West Kingodm live server
+
+classes:
+  - "postfix::server"
+  - "procmail"
+  - "ogm"
+
+ogm::root_user: 'wkadmin'
+ogm::sites:
+    westkingdom.org:
+      drupal_path: "/srv/www/westkingdom.org/htdocs"
+
+local_users:
+  joe:
+    password: password
+
+email_aliases:
+  westkingdom.org:
+    test.user: wkadmin
+    test.list:
+      - gregor@reetstreet.com
+      - wkweb@reetstreet.com
+
+
+postfix::server::db_files:
+  virtual:
+    content: "@westkingdom.org ogm"
+  aliases:
+    postfixdir: /etc
+    content: "postmaster: wkadmin"
+
+postfix::server::myhostname: 'server.westkingdom.org'
+
+postfix::server::mydomain: 'westkingdom.org'
+
+postfix::server::mydestination: '$myhostname, localhost.$mydomain, localhost, $mydomain'
+
+postfix::server::mailbox_command: '/usr/bin/procmail -a "$EXTENSION"'
+
+postfix::server::inet_interfaces: 'all'
+
+postfix::server::message_size_limit: '15360000' # 15MB
+
+postfix::server::virtual_alias_maps:
+  - hash:/etc/postfix/virtual

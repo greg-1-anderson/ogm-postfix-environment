@@ -8,6 +8,8 @@ class ogm (
   $download_cache_dir = '/tmp',
   $sites = undef,
 ) {
+  $delivery_binary = "/home/$mail_user/bin/deliver"
+
   group { $mail_users_group:
     ensure           => 'present',
     gid              => $mail_user_id,
@@ -33,7 +35,7 @@ class ogm (
     ensure           => directory,
     owner            => $mail_user,
     group            => $mail_users_group,
-    mode             => '0750',
+    mode             => '0755',
   }
 
   file { "/home/$mail_user/bin":
@@ -41,7 +43,7 @@ class ogm (
     ensure           => directory,
     owner            => $mail_user,
     group            => $mail_users_group,
-    mode             => '0750',
+    mode             => '0755',
   }
 
   procmail::conf { $mail_user:
@@ -63,11 +65,11 @@ class ogm (
 
     $drupal_root = $sites[$first_site_key]['drupal_path']
     $ogm_delivery_source = "$drupal_root/sites/all/modules/og_mailinglist/backends/postfix_og_mailinglist/og_mailinglist_postfix_transport.php"
-    $delivery_binary = "/home/$mail_user/bin/deliver"
     $site_info = "/home/$mail_user/bin/site_info.php"
 
     file { $delivery_binary:
       ensure => present,
+      mode => '0755',
       source => $ogm_delivery_source,
       require => File["$drupal_root/sites/all/libraries"],
     }

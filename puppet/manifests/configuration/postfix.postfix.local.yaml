@@ -87,6 +87,9 @@ dns::zones:
       client:
         data: "192.168.213.202"
         ptr: true
+    cname:
+      postfix:
+        data: "postfix.local."
     mx:
       "postfix.local.":
         preference: 10
